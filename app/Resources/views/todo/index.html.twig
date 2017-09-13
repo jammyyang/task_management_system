@@ -6,7 +6,9 @@
     <thead>
     <tr>
     <th></th>
+    <th>{{ knp_pagination_sortable(todos, 'Status', "todo.status") }}</th>
     <th>Todo</th>
+    <th>{{ knp_pagination_sortable(todos, 'Category', "todo.category") }}</th>
     <th>Due Date</th>
     <th></th>
     </tr>
@@ -15,7 +17,23 @@
     {%  for todo in todos %}
     <tr>
     <th scope="row"> </th>
+    <td>{{ todo.status }}</td>
     <td>{{ todo.name }}</td>
+    <td>{{ todo.category }}</td>
+    {%  if(date(todo.duedate|date('F j, Y g:i a')) < date()) %}
+
+            <td style="color:red">{{ todo.name }}</td>
+
+        {% elseif(date(todo.duedate|date('F j, Y g:i a')) < date('+1day') and date(todo.duedate|date('F j, Y g:i a')) > date()) %}
+
+            <td style="color:orange">{{ todo.name }}</td>
+
+    {% else %}
+
+            <td style="">{{ todo.name }}</td>
+
+
+    {% endif %}
     <td>{{ todo.duedate|date('F j, Y g:i a')}}</td>
     <td>
         <a href="/todo/details/{{ todo.id }}"class="btn btn-success">View</a>
@@ -26,4 +44,8 @@
     {%  endfor %}
     </tbody>
     </table>
+
+    <div class="navigation text-center">
+        {{ knp_pagination_render(todos) }}
+    </div>
 {% endblock %}

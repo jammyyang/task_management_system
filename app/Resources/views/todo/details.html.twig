@@ -6,10 +6,10 @@
     <h2 class="page-header"> {{ todo.name }}</h2>
     <ul class="list-group">
         <li class="list-group-item">Category: {{ todo.category }}</li>
+        <Li class="list-group-item">Details: {{  todo.description }}</Li>
         <li class="list-group-item">Priority: {{ todo.priority }}</li>
         <li class="list-group-item">Due: <strong> {{ todo.dueDate|date('F j, Y, g:i a')}}</strong></li>
+        <li class="list-group-item">Status: {{ todo.status }}</li>
     </ul>
-    <p>
-        <strong>Details: </strong>{{ todo.description }}
-    </p>
+
 {% endblock %}

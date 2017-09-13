@@ -17,13 +17,20 @@ class TodoController extends Controller{
     /**
      * @Route("/todos", name="todo_list")
      */
-    public function listAction(){
+    public function listAction(Request $request){
         $todos = $this->getDoctrine()
             ->getRepository('AppBundle:Todo')
             ->findAll();
 
+        $paginator = $this->get('knp_paginator');
+        $results = $paginator->paginate(
+            $todos,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit',10)
+        );
+
         return $this->render('todo/index.html.twig',
-            array('todos'=> $todos
+            array('todos'=> $results
             ));
     }
 
@@ -40,6 +47,7 @@ class TodoController extends Controller{
             ->add('description', TextareaType::class, array('attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
             ->add('priority', ChoiceType::class, array('choices'=>array('Low'=>'low', 'Normal'=>'Normal', 'High' => 'High'), 'attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
             ->add('due_date', DateTimeType::class, array('attr'=>array('class'=>'formcontrol', 'style' => 'margin-bottom:15px')))
+            ->add('status', ChoiceType::class, array('choices'=>array('Incomplete'=>'Incomplete', 'In Progress'=>'In Progress', 'Complete' => 'Complete'), 'attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label'=> 'Create Todo', 'attr' => array('class'=>'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
             
@@ -51,6 +59,7 @@ class TodoController extends Controller{
             $category = $form['category']->getData();
             $description = $form['description']->getData();
             $priority = $form['priority']->getData();
+            $status = $form['status']->getData();
             $due_date = $form['due_date']->getData();
 
             $now = new\DateTime('now');
@@ -59,6 +68,7 @@ class TodoController extends Controller{
             $todo->setCategory($category);
             $todo->setDescription($description);
             $todo->setPriority($priority);
+            $todo->setStatus($status);
             $todo->setDueDate($due_date);
             $todo->setCreateDate($now);
 
@@ -95,6 +105,7 @@ class TodoController extends Controller{
             $todo->setCategory($todo->getCategory());
             $todo->setDescription($todo->getDescription());
             $todo->setPriority($todo->getPriority());
+            $todo->setStatus($todo->getStatus());
             $todo->setDueDate($todo->getDueDate());
             $todo->setCreateDate($now);
 
@@ -103,6 +114,7 @@ class TodoController extends Controller{
             ->add('category', TextType::class, array('attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
             ->add('description', TextareaType::class, array('attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
             ->add('priority', ChoiceType::class, array('choices'=>array('Low'=>'low', 'Normal'=>'Normal', 'High' => 'High'), 'attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('status', ChoiceType::class, array('choices'=>array('Incomplete'=>'Incomplete', 'In Progress'=>'In Progress', 'Complete' => 'complete'), 'attr'=>array('class'=>'form-control', 'style' => 'margin-bottom:15px')))
             ->add('due_date', DateTimeType::class, array('attr'=>array('class'=>'formcontrol', 'style' => 'margin-bottom:15px')))
             ->add('save', SubmitType::class, array('label'=> 'Update Todo', 'attr' => array('class'=>'btn btn-primary', 'style' => 'margin-bottom:15px')))
             ->getForm();
@@ -115,6 +127,7 @@ class TodoController extends Controller{
             $category = $form['category']->getData();
             $description = $form['description']->getData();
             $priority = $form['priority']->getData();
+            $status = $form['status']->getData();
             $due_date = $form['due_date']->getData();
 
             $now = new\DateTime('now');
@@ -126,6 +139,7 @@ class TodoController extends Controller{
             $todo->setCategory($category);
             $todo->setDescription($description);
             $todo->setPriority($priority);
+            $todo->setStatus($status);
             $todo->setDueDate($due_date);
             $todo->setCreateDate($now);
 
