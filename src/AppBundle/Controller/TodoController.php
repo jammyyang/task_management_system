@@ -26,7 +26,7 @@ class TodoController extends Controller{
         $results = $paginator->paginate(
             $todos,
             $request->query->getInt('page', 1),
-            $request->query->getInt('limit',10)
+            $request->query->getInt('limit',5)
         );
 
         return $this->render('todo/index.html.twig',
